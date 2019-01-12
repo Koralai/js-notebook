@@ -6,6 +6,7 @@ for (let i = 0; i < allDrumKit.length; i++) {
 
     let buttonInnerHTML = this.innerHTML;
     makeSound(buttonInnerHTML);
+    buttonAnimation(buttonInnerHTML);
   });  
 }
 
@@ -13,6 +14,7 @@ document.addEventListener("keypress", function(event){ //event listener callback
   
   let pressedKey = event.key.toLowerCase();
   makeSound(pressedKey);
+  buttonAnimation(pressedKey);
 });
 
 function makeSound(key) {
@@ -54,4 +56,14 @@ function makeSound(key) {
 
     default: console.log(key);
   }
+}
+
+function buttonAnimation(currentKey) {
+  
+  let activeButton = document.querySelector("." + currentKey); //Concatenate with "." to make it a class selector.
+
+  activeButton.classList.add("pressed");      //Add + remove the "pressed" class
+  setTimeout(function() {
+    activeButton.classList.remove("pressed");
+  }, 100);
 }
