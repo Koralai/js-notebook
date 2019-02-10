@@ -1,69 +1,49 @@
 let gameStarted = false; //Making sure the keydown event only starts the game once
 
+// Initial data
+const buttonColors = ["red", "blue", "green", "yellow"];
+let level = 0;
+let gamePattern = [];
+let userClickedPattern = [];
+
+// Gameplay
 $(document).keydown(function () {
   if (!gameStarted) {
     gameStarted = true;
-  
-    // Initial data
-    const buttonColors = ["red", "blue", "green", "yellow"];
-    let gamePattern = [];
-    let userClickedPattern = [];
-    
-    // First move: start with a random color (w/ sound & visual effects) and add it to the game pattern
-    let randomChosenColor = buttonColors[nextSequence()];
-    $("#" + randomChosenColor).fadeOut(125).fadeIn(125); //Make the button of the chosen color blink
-    playSound(randomChosenColor);
-    gamePattern.push(randomChosenColor);
-
-    // Record the buttons pressed by the user, make sound & visual effects on button press)
-    $(".btn").click(function(){
-      let userChosenColor = $(this).attr("id");
-
-      userClickedPattern.push(userChosenColor);
-      playSound(userChosenColor);
-      animatePress(userChosenColor);
-      
-      console.log(userClickedPattern);
-    });
-
-    console.log(gamePattern);
-    console.log(randomChosenColor);
+    nextSequence();
   }
 });
 
-// Randomly generate a number between 0 and 3 (for indexes of the buttonColors array)
+// The user's move: animate button pressed by the user and add it to the user's sequence
+$(".btn").click(function () {
+  let userChosenColor = $(this).attr("id");
+
+  userClickedPattern.push(userChosenColor);
+  playSound(userChosenColor);
+  animatePress(userChosenColor);
+
+  console.log(userClickedPattern);
+});
+
+// The game's move: increase the game level, randomly select/animate a button and add to the game's sequence
 function nextSequence() {
-  return Math.floor(Math.random() * 4);
+  $("#level-title").text("Level " + level);
+  level++;
+
+  let randomNumber = Math.floor(Math.random() * 4); // Between 0 and 3 because the colors array has only 4 indexes
+  let randomChosenColor = buttonColors[randomNumber];
+  gamePattern.push(randomChosenColor);
+
+  $("#" + randomChosenColor).fadeOut(125).fadeIn(125); // Makes the button of the chosen color blink
+  playSound(randomChosenColor);
+
+  console.log(gamePattern);
 }
 
 // Play the sound associated with each color
 function playSound(colorName) {
-  switch (colorName) {
-    case "blue":
-      let soundBlue = new Audio("sounds/blue.mp3");
-      soundBlue.play();
-      break;
-
-    case "green":
-      let soundGreen = new Audio("sounds/green.mp3");
-      soundGreen.play();
-      break;
-
-    case "red":
-      let soundRed = new Audio("sounds/red.mp3");
-      soundRed.play();
-      break;
-
-    case "yellow":
-      let soundYellow = new Audio("sounds/yellow.mp3");
-      soundYellow.play();
-      break;
-
-    case "wrong":
-      let soundWrong = new Audio("sounds/wrong.mp3");
-      soundWrong.play();
-      break;
-  }
+  let audio = new Audio("sounds/" + colorName + ".mp3");
+  audio.play();
 }
 
 // Animation for pressing a button
@@ -71,7 +51,7 @@ function animatePress(currentColor) {
   let selectedBtn = $(".btn." + currentColor);
   selectedBtn.addClass("pressed");
 
-  setTimeout(function(){
+  setTimeout(function () {
     selectedBtn.removeClass("pressed");
   }, 100);
 }
