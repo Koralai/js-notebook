@@ -1,4 +1,5 @@
 let gameStarted = false; //Making sure the keydown event only starts the game once
+let userClickedPattern = [];
 
 $(document).keydown(function () {
   if (!gameStarted) {
@@ -11,8 +12,13 @@ $(document).keydown(function () {
     gamePattern.push(randomChosenColor);
 
     $("#" + randomChosenColor).fadeOut(125).fadeIn(125); //Make the button of the chosen color blink
-    
     playSound(randomChosenColor);
+
+    $(".btn").click(function(){
+      let userChosenColor = $(this).attr("id");
+      userClickedPattern.push(userChosenColor);
+      console.log(userClickedPattern);
+    });
 
     console.log(gamePattern);
     console.log(randomChosenColor);
