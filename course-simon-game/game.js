@@ -1,12 +1,10 @@
 let gameStarted = false; //Making sure the keydown event only starts the game once
-
-// Initial data
 const buttonColors = ["red", "blue", "green", "yellow"];
 let level = 0;
 let gamePattern = [];
 let userClickedPattern = [];
 
-// Gameplay
+// Begin gameplay
 $(document).keydown(function () {
   if (!gameStarted) {
     gameStarted = true;
@@ -14,7 +12,7 @@ $(document).keydown(function () {
   }
 });
 
-// The user's move: animate button pressed by the user and add it to the user's sequence
+// The user's move: animate button pressed by the user and add it to the user's sequence; check the user's answer
 $(".btn").click(function () {
   let userChosenColor = $(this).attr("id");
 
@@ -22,7 +20,7 @@ $(".btn").click(function () {
   playSound(userChosenColor);
   animatePress(userChosenColor);
 
-  console.log(userClickedPattern);
+  checkAnswer(userClickedPattern.length - 1); // Last index will be at position length-1.
 });
 
 // The game's move: increase the game level, randomly select/animate a button and add to the game's sequence
@@ -36,8 +34,36 @@ function nextSequence() {
 
   $("#" + randomChosenColor).fadeOut(125).fadeIn(125); // Makes the button of the chosen color blink
   playSound(randomChosenColor);
+}
 
-  console.log(gamePattern);
+function checkAnswer(currentLevel) {
+
+  if (userClickedPattern[currentLevel] === gamePattern[currentLevel]) {
+
+    if (userClickedPattern.length === gamePattern.length) {
+      setTimeout(function () {
+        nextSequence()
+      }, 1000);
+      userClickedPattern = [];
+    }
+  } else {
+    playSound("wrong");
+
+    $("body").addClass("game-over");
+    setTimeout(function () {
+      $("body").removeClass("game-over");
+    }, 200);
+
+    $("#level-title").text("Game Over, Press Any Key to Restart");
+    startOver();
+  }
+}
+
+function startOver() {
+  gameStarted = false;
+  level = 0;
+  gamePattern = [];
+  userClickedPattern = [];
 }
 
 // Play the sound associated with each color
