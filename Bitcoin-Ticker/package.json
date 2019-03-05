@@ -1,0 +1,16 @@
+{
+  "name": "bitcoin-ticker",
+  "version": "1.0.0",
+  "description": "Practice grabbing live data from an API by making a Bitcoin ticker",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Carrie Clark",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "request": "^2.88.0"
+  }
+}
