@@ -14,7 +14,8 @@ app.post("/", function(req, res){
   let userChosenCrypto = req.body.crypto;
   let userChosenFiat = req.body.fiat;
 
-  let cryptoWord = getCryptoWord(userChosenCrypto);
+  let currentCryptoWord = getCryptoWord(userChosenCrypto);
+  let currentFiatSymbol = getCurrencySymbol(userChosenFiat);
 
   let tickerRequestURL = `https://apiv2.bitcoinaverage.com/indices/global/ticker/${userChosenCrypto}${userChosenFiat}`; 
 
@@ -22,7 +23,7 @@ app.post("/", function(req, res){
     let data = JSON.parse(body); // body is the JSON data sent in response; convert to JS object to work with it
     let latestPrice = data.last; // "last" points to a key/value pair from the API data
 
-    res.send(`The current price of ${cryptoWord} is ${latestPrice} ${userChosenFiat}.`);
+    res.send(`The current price of ${currentCryptoWord} is ${currentFiatSymbol}${latestPrice}.`);
   });
 });
 
@@ -41,5 +42,18 @@ function getCryptoWord(cryptoAbbreviation) {
       return "Litecoin";
     default: 
       return "this cryptocurrency";
+  }
+}
+
+function getCurrencySymbol(currency) {
+  switch(currency) {
+    case "USD":
+      return "$";
+    case "GBP":
+      return "£";
+    case "EUR":
+      return "€";
+    default:
+      return "";
   }
 }
