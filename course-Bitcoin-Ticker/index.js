@@ -22,8 +22,12 @@ app.post("/", function(req, res){
   request(tickerRequestURL, function(error, response, body) {
     let data = JSON.parse(body); // body is the JSON data sent in response; convert to JS object to work with it
     let latestPrice = data.last.toFixed(2); // "last" points to a key/value pair from the API data
+    let weeklyAvgPrice = data.averages.week.toFixed(2);
 
-    res.send(`The current price of ${currentCryptoWord} is ${currentFiatSymbol}${latestPrice}.`);
+    res.send(`
+    The latest price of ${currentCryptoWord} is ${currentFiatSymbol}${latestPrice}.
+    The weekly average price of ${currentCryptoWord} is ${currentFiatSymbol}${weeklyAvgPrice}.
+    `);
   });
 });
 
