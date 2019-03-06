@@ -11,13 +11,17 @@ app.get("/", function(req, res) {
 });
 
 app.post("/", function(req, res){
-  // console.log(`${req.body.crypto} to ${req.body.fiat}...`);
+  let userChosenCrypto = req.body.crypto;
+  let userChosenFiat = req.body.fiat;
 
-  request("https://apiv2.bitcoinaverage.com/indices/global/ticker/BTCUSD", function(error, response, body) {
-    console.log(body);
+  let tickerRequestURL = `https://apiv2.bitcoinaverage.com/indices/global/ticker/${userChosenCrypto}${userChosenFiat}`; 
+
+  request(tickerRequestURL, function(error, response, body) {
+    let data = JSON.parse(body); // body is the JSON data sent in response; convert to JS object to work with it
+    let latestPrice = data.last; // "last" points to a key/value pair from the API data
+
+    res.send(`The current price of ${userChosenCrypto} is ${latestPrice} ${userChosenFiat}.`);
   });
-
-  res.send("Response...");
 });
 
 app.listen(3000, function() {
