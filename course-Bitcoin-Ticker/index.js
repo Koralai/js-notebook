@@ -11,24 +11,31 @@ app.get("/", function(req, res) {
 });
 
 app.post("/", function(req, res){
+  // Getting data from the form (req.body.[field name])
   let userChosenCrypto = req.body.crypto;
   let userChosenFiat = req.body.fiat;
+  let userChosenAmount = req.body.amount;
 
   let currentCryptoWord = getCryptoWord(userChosenCrypto);
   let currentFiatSymbol = getCurrencySymbol(userChosenFiat);
 
-  let tickerRequestURL = `https://apiv2.bitcoinaverage.com/indices/global/ticker/${userChosenCrypto}${userChosenFiat}`; 
+  // The npm request package lets the first arg of request(x,y) be a URL or options object, which is more customizable
+  let options = {
+    url: "https://apiv2.bitcoinaverage.com/convert/global",
+    method: "GET",
+    qs: {
+      from: userChosenCrypto,
+      to: userChosenFiat,
+      amount: userChosenAmount
+    },
+  };
 
-  request(tickerRequestURL, function(error, response, body) {
+  request(options, function(error, response, body) {
     let data = JSON.parse(body); // body is the JSON data sent in response; convert to JS object to work with it
-    let latestPrice = data.last.toFixed(2); // "last" points to a key/value pair from the API data
-    let weeklyAvgPrice = data.averages.week.toFixed(2);
-    let currentDate = data.display_timestamp;
+    let latestPrice = data.price.toFixed(2); // "last" points to a key/value pair from the API data
 
     res.send(`
-      <p>Current date: ${currentDate}.</p>
-      <p>The latest price of ${currentCryptoWord} is ${currentFiatSymbol}${latestPrice}.</p>
-      <p>The weekly average price of ${currentCryptoWord} is ${currentFiatSymbol}${weeklyAvgPrice}.</p>
+      <p>The latest price of ${userChosenAmount} ${currentCryptoWord} is ${currentFiatSymbol}${latestPrice}.</p>
     `);
   });
 });
